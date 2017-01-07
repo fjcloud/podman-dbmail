@@ -9,7 +9,7 @@
 #
 # database connection URI
 
-dburi                = postgresql://{{ with secret "secret/dbmail/postgresql/user" }}{{ .Data.value }}{{ end }}:{{ with secret "secret/dbmail/postgresql/password" }}{{ .Data.value }}{{ end }}@172.18.0.1:5432/mail
+dburi                = postgresql://{{ with secret "secret/dbmail/postgresql/user" }}{{ .Data.value }}{{ end }}:{{ with secret "secret/dbmail/postgresql/password" }}{{ .Data.value }}{{ end }}@{{ if env "DB_ADDR" }}{{ env "DB_ADDR" }}{{ else if service "db" }}{{ range service "db" }}{{ .Address }}{{ end }}{{ else }}db.weave.local{{ end }}:5432/mail
 
 #
 # Supported drivers are sql, ldap.
@@ -97,9 +97,9 @@ sendmail              = /usr/sbin/sendmail
 #            31 = Emergency + Alert + Critical + Error + Warning
 #           511 = Everything
 #
-file_logging_levels       = 7
+file_logging_levels       = 63
 #
-syslog_logging_levels     = 31
+syslog_logging_levels     = 63
 
 #
 # Generate a log entry for database queries for the log level at number of seconds of query execution time.
@@ -160,12 +160,12 @@ authlog               = no
 #
 # logfile for stdout messages
 #
-logfile               = /var/log/dbmail/dbmail.log
+logfile               = /var/log/dbmail.log
 
 #
 # logfile for stderr messages
 #
-errorlog              = /var/log/dbmail/dbmail.err
+errorlog              = /var/log/dbmail.err
 
 #
 # directory for storing PID files
@@ -238,7 +238,6 @@ port                  = 41380
 #
 # the httpd daemon provides full access to all users, mailboxes
 # and messages. Be very careful with this one!
-bindip                = 127.0.0.1
 admin                 = admin:secret
 
 [IMAP]
@@ -276,6 +275,11 @@ imap_before_smtp      = no
 #
 # idle_interval         = 10
 
+#
+# If TLS is enabled, login before starttls is normally
+# not allowed. Use login_disabled=no to change this
+#
+# login_disabled        = yes
 
 #
 # Provide a CAPABILITY to override the default
