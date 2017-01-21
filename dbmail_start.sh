@@ -11,20 +11,26 @@ chown dbmail:dbmail /var/run/dbmail
 # Foreground mode (-D -n) in dbmail works incorrect
 # Daemons didn't listening ports
 # So use background mode
-dbmail-imapd -f /etc/dbmail.conf
-dbmail-lmtpd -f /etc/dbmail.conf
-dbmail-timsieved -f /etc/dbmail.conf
+
+pidfile=""
+
+if [ "$DBMAIL_SERVICE" = "imapd" ]; then
+  dbmail-imapd -f /etc/dbmail.conf
+  pidfile="dbmail-imapd.pid"
+elif [ "$DBMAIL_SERVICE" = "lmtpd" ]; then
+  dbmail-lmtpd -f /etc/dbmail.conf
+  pidfile="dbmail-lmtpd.pid"
+elif [ "$DBMAIL_SERVICE" = "timsieved" ]; then
+  dbmail-timsieved -f /etc/dbmail.conf
+  pidfile="dbmail-timsieved.pid"
+fi
 
 # Wait daemons start
 sleep 2
 
-child1=`cat /var/run/dbmail/dbmail-imapd.pid`
-child2=`cat /var/run/dbmail/dbmail-lmtpd.pid`
-child3=`cat /var/run/dbmail/dbmail-timsieved.pid`
+child=`cat /var/run/dbmail/$pidfile`
 
-echo "Childs: $child1 $child2 $child3"
-
-trap "kill $child1 $child2 $child3" INT TERM
+trap "kill $child" INT TERM
 
 anywait(){
   for pid in "$@"; do
@@ -34,4 +40,4 @@ anywait(){
   done
 }
 
-anywait $child1 $child2 $child3
+anywait $child
