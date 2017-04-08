@@ -52,4 +52,4 @@ ENV DBMAIL_SERVICE=
 ENV USER_UID=1000
 ENV USER_GID=1000
 
-CMD ["consul-template", "-config", "/etc/dbmail.hcl"]
+CMD ["/usr/local/bin/consul-template", "-config", "/etc/dbmail.hcl"]
