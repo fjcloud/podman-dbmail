@@ -32,12 +32,12 @@ child=`cat /var/run/dbmail/$pidfile`
 
 trap "kill $child" INT TERM
 
-anywait(){
-  for pid in "$@"; do
-    while kill -0 "$pid"; do
-      sleep 1
-    done
-  done
-}
-
-anywait $child
+while true; do
+  kill -0 "$child"
+  if [ "$?" = "0" ]; then
+    sleep 5
+  else
+    echo "Exited"
+    exit
+  fi
+done

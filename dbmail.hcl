@@ -11,6 +11,11 @@ template {
   destination = "/etc/dbmail.conf"
 }
 
+template {
+  source = "/root/ssmtp.conf.template"
+  destination = "/etc/ssmtp/ssmtp.conf"
+}
+
 exec {
   command = "/usr/local/bin/dbmail_start.sh"
   splay = "60s"

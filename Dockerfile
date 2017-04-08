@@ -1,42 +1,47 @@
 FROM debian:8
 
-COPY consul-template_0.16.0_SHA256SUMS /usr/local/bin/consul-template_0.16.0_SHA256SUMS
-COPY dbmail-3.2.3.tar.gz_SHA256SUMS /usr/local/bin/dbmail-3.2.3.tar.gz_SHA256SUMS
+ENV CONSUL_TEMPLATE_VERSION=0.18.2
+ENV CONSUL_TEMPLATE_SHA256=6fee6ab68108298b5c10e01357ea2a8e4821302df1ff9dd70dd9896b5c37217c
+
+ENV DBMAIL_MAIN_VERSION=3.2
+ENV DBMAIL_VERSION=3.2.3
+ENV DBMAIL_SHA256=fd4d90e3e5ddb0c3fbdaa766d19d2464b5027a8c8d0b0df614418a3aac811832
 
 RUN \
   apt-get update \
   && apt-get install --no-install-recommends --no-install-suggests -y \
   curl unzip ca-certificates build-essential libpq-dev \
   libglib2.0-dev libgmime-2.6-dev libsieve2-dev libmhash-dev libevent-dev \
-  libzdb-dev \
+  libzdb-dev ssmtp \
 
   && cd /usr/local/bin \
-  && curl -L https://releases.hashicorp.com/consul-template/0.16.0/consul-template_0.16.0_linux_amd64.zip -o consul-template_0.16.0_linux_amd64.zip \
-  && sha256sum -c consul-template_0.16.0_SHA256SUMS \
-  && unzip consul-template_0.16.0_linux_amd64.zip \
-  && rm consul-template_0.16.0_linux_amd64.zip consul-template_0.16.0_SHA256SUMS \
+  && curl -L https://releases.hashicorp.com/consul-template/${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip -o consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip \
+  && echo -n "$CONSUL_TEMPLATE_SHA256  consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip" | sha256sum -c - \
+  && unzip consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip \
+  && rm consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip \
 
-  && curl -L http://www.dbmail.org/download/3.2/dbmail-3.2.3.tar.gz -o dbmail-3.2.3.tar.gz \
-  && sha256sum -c dbmail-3.2.3.tar.gz_SHA256SUMS \
-  && tar -zxf dbmail-3.2.3.tar.gz \
-  && rm dbmail-3.2.3.tar.gz dbmail-3.2.3.tar.gz_SHA256SUMS \
-  && cd dbmail-3.2.3 \
+  && curl -L http://www.dbmail.org/download/$DBMAIL_MAIN_VERSION/dbmail-${DBMAIL_VERSION}.tar.gz -o dbmail-${DBMAIL_VERSION}.tar.gz \
+  && echo -n "$DBMAIL_SHA256  dbmail-${DBMAIL_VERSION}.tar.gz" | sha256sum -c - \
+  && tar -zxf dbmail-${DBMAIL_VERSION}.tar.gz \
+  && rm dbmail-${DBMAIL_VERSION}.tar.gz \
+  && cd dbmail-${DBMAIL_VERSION} \
   && ./configure --with-sieve \
   && make all && make install \
-  && rm -rf /usr/local/bin/dbmail-3.2.3 \
+  && rm -rf /usr/local/bin/dbmail-${DBMAIL_VERSION} \
 
   && ln -sf /proc/1/fd/2 /var/log/dbmail.err \
   && ln -sf /proc/1/fd/1 /var/log/dbmail.log \
 
-  && apt-get remove -y curl unzip ca-certificates build-essential libpq-dev \
+  && apt-get purge -y --auto-remove curl unzip ca-certificates build-essential \
   libglib2.0-dev libgmime-2.6-dev libsieve2-dev libmhash-dev libevent-dev \
-  libzdb-dev \
+  libzdb-dev libpq-dev \
   && rm -rf /var/lib/apt/lists/*
 
 COPY dbmail_start.sh /usr/local/bin/dbmail_start.sh
 COPY dbmail.hcl /etc/dbmail.hcl
 COPY dbmail.conf.template /root/dbmail.conf.template
 COPY pgpass.template /root/pgpass.template
+COPY ssmtp.conf.template /root/ssmtp.conf.template
 
 ENV CONSUL_HTTP_ADDR=
 ENV CONSUL_TOKEN=
@@ -47,4 +52,4 @@ ENV DBMAIL_SERVICE=
 ENV USER_UID=1000
 ENV USER_GID=1000
 
-CMD consul-template -config /etc/dbmail.hcl
+CMD ["consul-template", "-config", "/etc/dbmail.hcl"]
