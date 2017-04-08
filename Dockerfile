@@ -12,7 +12,11 @@ RUN \
   && apt-get install --no-install-recommends --no-install-suggests -y \
   curl unzip ca-certificates build-essential libpq-dev \
   libglib2.0-dev libgmime-2.6-dev libsieve2-dev libmhash-dev libevent-dev \
-  libzdb-dev ssmtp \
+  libzdb-dev \
+
+  && apt-get install --no-install-recommends --no-install-suggests -y \
+  ssmtp libpq5 libglib2.0 libgmime-2.6 libsieve2-1 libmhash2 libevent-2.0-5 \
+  libevent-pthreads-2.0-5 libzdb9 \
 
   && cd /usr/local/bin \
   && curl -L https://releases.hashicorp.com/consul-template/${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip -o consul-template_${CONSUL_TEMPLATE_VERSION}_linux_amd64.zip \
@@ -33,8 +37,8 @@ RUN \
   && ln -sf /proc/1/fd/1 /var/log/dbmail.log \
 
   && apt-get purge -y --auto-remove curl unzip ca-certificates build-essential \
-  libglib2.0-dev libgmime-2.6-dev libsieve2-dev libmhash-dev libevent-dev \
-  libzdb-dev libpq-dev \
+  libpq-dev libglib2.0-dev libgmime-2.6-dev libsieve2-dev libmhash-dev \
+  libevent-dev libzdb-dev \
   && rm -rf /var/lib/apt/lists/*
 
 COPY dbmail_start.sh /usr/local/bin/dbmail_start.sh
