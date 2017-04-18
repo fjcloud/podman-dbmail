@@ -10,7 +10,7 @@ root=prepodam@mail.ru
 mailhub={{ range service "mta" }}{{ .Address }}:{{ .Port }}{{ end }}
 
 # Where will the mail seem to come from?
-# rewriteDomain=
+rewriteDomain=xvostovnet.ru
 
 # The full hostname
 # hostname=
