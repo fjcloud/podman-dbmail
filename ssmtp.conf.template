@@ -7,7 +7,10 @@ root=prepodam@mail.ru
 
 # The place where the mail goes. The actual machine name is required no
 # MX records are consulted. Commonly mailhosts are named mail.domain.com
-mailhub={{ range service "mta" }}{{ .Address }}:{{ .Port }}{{ end }}
+mailhub=
+{{- range $i, $s := service "mta~_agent" }}
+  {{- if eq $i 0 }}{{ $s.Address }}:{{ $s.Port }}{{ end }}
+{{- end }}
 
 # Where will the mail seem to come from?
 rewriteDomain=xvostovnet.ru
