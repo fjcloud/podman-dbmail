@@ -1,1 +1,7 @@
-{{ if env "DB_ADDR" }}{{ env "DB_ADDR" }}{{ else if service "db" }}{{ range service "db" }}{{ .Address }}{{ end }}{{ else }}db.weave.local{{ end }}:5432:*:{{ with secret "secret/mail/postgresql/user" }}{{ .Data.value }}{{ end }}:{{ with secret "secret/mail/postgresql/password" }}{{ .Data.value }}{{ end }}
+{{ if env "DB_ADDR" }}
+  {{- env "DB_ADDR" }}
+{{- else if service "db" }}
+  {{- range $i, $s := service "db~_agent" }}{{ if eq $i 0 }}{{ $s.Address }}{{ end }}
+  {{- end }}
+{{- else }}db.weave.local
+{{- end }}:5432:*:{{ with secret "secret/mail/postgresql/user" }}{{ .Data.value }}{{ end }}:{{ with secret "secret/mail/postgresql/password" }}{{ .Data.value }}{{ end }}
