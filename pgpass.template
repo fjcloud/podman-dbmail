@@ -1,7 +1,21 @@
 {{ if env "DB_ADDR" }}
   {{- env "DB_ADDR" }}
 {{- else if service "db" }}
-  {{- range $i, $s := service "db~_agent" }}{{ if eq $i 0 }}{{ $s.Address }}{{ end }}
+  {{- range $s := service "db~_agent" }}
+    {{- if not ( scratch.Key "addr" ) }}
+      {{- scratch.Set "addr" "1" }}
+      {{- $s.Address }}
+    {{- end }}
   {{- end }}
-{{- else }}db.weave.local
-{{- end }}:5432:*:{{ with secret "secret/mail/postgresql/user" }}{{ .Data.value }}{{ end }}:{{ with secret "secret/mail/postgresql/password" }}{{ .Data.value }}{{ end }}
+{{- else }}
+  {{- range $dc := datacenters }}
+    {{- range $s := $dc | printf "db@%s" | service }}
+      {{- if not ( scratch.Key "addr2" ) }}
+        {{- scratch.Set "addr2" "1" }}
+        {{- $s.Address }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}:5432:*:
+{{- with secret "secret/mail/postgresql/user" }}{{ .Data.value }}{{ end }}:
+{{- with secret "secret/mail/postgresql/password" }}{{ .Data.value }}{{ end }}
