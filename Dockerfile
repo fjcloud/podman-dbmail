@@ -1,11 +1,25 @@
 FROM debian:8
 
-ENV CONSUL_TEMPLATE_VERSION=0.18.5
-ENV CONSUL_TEMPLATE_SHA256=b0cd6e821d6150c9a0166681072c12e906ed549ef4588f73ed58c9d834295cd2
+ENV \
+  CONSUL_TEMPLATE_VERSION=0.19.4 \
+  CONSUL_TEMPLATE_SHA256=5f70a7fb626ea8c332487c491924e0a2d594637de709e5b430ecffc83088abc0 \
 
-ENV DBMAIL_MAIN_VERSION=3.2
-ENV DBMAIL_VERSION=3.2.3
-ENV DBMAIL_SHA256=fd4d90e3e5ddb0c3fbdaa766d19d2464b5027a8c8d0b0df614418a3aac811832
+  DBMAIL_MAIN_VERSION=3.2 \
+  DBMAIL_VERSION=3.2.3 \
+  DBMAIL_SHA256=fd4d90e3e5ddb0c3fbdaa766d19d2464b5027a8c8d0b0df614418a3aac811832 \
+
+  CONSUL_HTTP_ADDR= \
+  CONSUL_TOKEN= \
+  VAULT_ADDR= \
+  VAULT_TOKEN= \
+
+  DBMAIL_SERVICE= \
+
+  USER_UID=1000 \
+  USER_GID=1000 \
+
+  SET_CONTAINER_TIMEZONE=true \
+  CONTAINER_TIMEZONE=Europe/Moscow
 
 RUN \
   apt-get update \
@@ -68,18 +82,7 @@ RUN \
   && rm -rf /var/lib/apt/lists/*
 
 COPY dbmail_start.sh /usr/local/bin/dbmail_start.sh
-COPY dbmail.hcl /etc/dbmail.hcl
-COPY dbmail.conf.template /root/dbmail.conf.template
-COPY pgpass.template /root/pgpass.template
-COPY ssmtp.conf.template /root/ssmtp.conf.template
+COPY templates /root/templates
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-ENV CONSUL_HTTP_ADDR=
-ENV CONSUL_TOKEN=
-ENV VAULT_ADDR=
-ENV VAULT_TOKEN=
-ENV DBMAIL_SERVICE=
-
-ENV USER_UID=1000
-ENV USER_GID=1000
-
-CMD ["/usr/local/bin/consul-template", "-config", "/etc/dbmail.hcl"]
+CMD ["/usr/local/bin/entrypoint.sh"]

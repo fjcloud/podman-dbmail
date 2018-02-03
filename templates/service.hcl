@@ -1,18 +1,18 @@
 max_stale = "2m"
 
 template {
-  source = "/root/pgpass.template"
+  source = "/root/templates/pgpass.template"
   destination = "/root/.pgpass"
   perms = 0600
 }
 
 template {
-  source = "/root/dbmail.conf.template"
+  source = "/root/templates/dbmail.conf.template"
   destination = "/etc/dbmail.conf"
 }
 
 template {
-  source = "/root/ssmtp.conf.template"
+  source = "/root/templates/ssmtp.conf.template"
   destination = "/etc/ssmtp/ssmtp.conf"
 }
 

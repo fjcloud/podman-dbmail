@@ -1,13 +1,5 @@
 #!/usr/bin/env sh
 
-userdel dbmail 2>/dev/null
-groupdel dbmail 2>/dev/null
-groupadd -g $USER_GID dbmail
-useradd -d /home/dbmail -g dbmail -u $USER_UID dbmail
-
-mkdir -p /var/run/dbmail
-chown dbmail:dbmail /var/run/dbmail
-
 # Foreground mode (-D -n) in dbmail works incorrect
 # Daemons didn't listening ports
 # So use background mode
@@ -23,6 +15,9 @@ elif [ "$DBMAIL_SERVICE" = "lmtpd" ]; then
 elif [ "$DBMAIL_SERVICE" = "timsieved" ]; then
   dbmail-timsieved -f /etc/dbmail.conf
   pidfile="dbmail-timsieved.pid"
+elif [ "$DBMAIL_SERVICE" = "pop" ]; then
+  dbmail-pop3d -f /etc/dbmail.conf
+  pidfile="dbmail-pop3d.pid"
 fi
 
 # Wait daemons start
