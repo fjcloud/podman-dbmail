@@ -1,21 +1,21 @@
 {{ if env "DB_ADDR" }}
   {{- env "DB_ADDR" }}
 {{- else if service "db" }}
-  {{- range $s := service "db~_agent" }}
+  {{- range $s := service "db~_agent" | toJSON | plugin "rttfix" | parseJSON }}
     {{- if not ( scratch.Key "addr" ) }}
       {{- scratch.Set "addr" "1" }}
-      {{- $s.Address }}
+      {{- $s.Address }}:{{ $s.Port }}
     {{- end }}
   {{- end }}
 {{- else }}
-  {{- range $dc := datacenters }}
-    {{- range $s := $dc | printf "db@%s" | service }}
+  {{- range $dc := datacenters true }}
+    {{- range $s := $dc | printf "db@%s" | service | toJSON | plugin "rttfix" | parseJSON }}
       {{- if not ( scratch.Key "addr2" ) }}
         {{- scratch.Set "addr2" "1" }}
-        {{- $s.Address }}
+        {{- $s.Address }}:{{ $s.Port }}
       {{- end }}
     {{- end }}
   {{- end }}
-{{- end }}:5432:*:
+{{- end }}:*:
 {{- with secret "secret/mail/postgresql/user" }}{{ .Data.value }}{{ end }}:
 {{- with secret "secret/mail/postgresql/password" }}{{ .Data.value }}{{ end }}

@@ -20,10 +20,16 @@ elif [ "$DBMAIL_SERVICE" = "pop" ]; then
   pidfile="dbmail-pop3d.pid"
 fi
 
+
 # Wait daemons start
-sleep 2
+x=0
+while [ "$x" -lt 100 -a ! -e "/var/run/dbmail/$pidfile" ]; do
+  x=$((x+1))
+  sleep 1
+done
 
 child=`cat /var/run/dbmail/$pidfile`
+echo "Got pid: $child"
 
 trap "kill $child" INT TERM
 

@@ -8,8 +8,22 @@ root=prepodam@mail.ru
 # The place where the mail goes. The actual machine name is required no
 # MX records are consulted. Commonly mailhosts are named mail.domain.com
 mailhub=
-{{- range $i, $s := service "mta~_agent" }}
-  {{- if eq $i 0 }}{{ $s.Address }}:{{ $s.Port }}{{ end }}
+{{- if service "mta" }}
+  {{- range $i, $s := service "mta~_agent" | toJSON | plugin "rttfix" | parseJSON }}
+      {{- if not ( scratch.Key "addr1" ) }}
+        {{- scratch.Set "addr1" "1" }}
+        {{- $s.Address }}:{{ $s.Port }}
+      {{- end }}
+  {{- end }}
+{{- else }}
+  {{- range $dc := datacenters true }}
+    {{- range $i, $s := $dc | printf "mta@%s" | service | toJSON | plugin "rttfix" | parseJSON }}
+      {{- if not ( scratch.Key "addr2" ) }}
+        {{- scratch.Set "addr2" "1" }}
+        {{- $s.Address }}:{{ $s.Port }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
 {{- end }}
 
 # Where will the mail seem to come from?
