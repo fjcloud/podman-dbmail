@@ -16,8 +16,8 @@ dburi                = postgresql://
     {{- env "DB_ADDR" }}
   {{- else if service "db" }}
     {{- range $s := service "db~_agent" | toJSON | plugin "rttfix" | parseJSON }}
-      {{- if not ( scratch.Key "addr" ) }}
-        {{- scratch.Set "addr" "1" }}
+      {{- if not ( scratch.Key "addr1" ) }}
+        {{- scratch.Set "addr1" "1" }}
         {{- $s.Address }}:{{ $s.Port }}
       {{- end }}
     {{- end }}
