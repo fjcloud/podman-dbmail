@@ -3,7 +3,7 @@
 #
 # The person who gets all mail for userids < 1000
 # Make this empty to disable rewriting.
-root=prepodam@mail.ru
+root={{ env "DBMAIL_ROOT_ADDR" }}
 
 # The place where the mail goes. The actual machine name is required no
 # MX records are consulted. Commonly mailhosts are named mail.domain.com
@@ -27,7 +27,7 @@ mailhub=
 {{- end }}
 
 # Where will the mail seem to come from?
-rewriteDomain=xvostovnet.ru
+rewriteDomain={{ env "DBMAIL_REWRITE_DOMAIN" }}
 
 # The full hostname
 # hostname=
