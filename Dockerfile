@@ -1,4 +1,4 @@
-FROM debian:8 AS build
+FROM debian:8.11 AS build
 
 ENV \
   CONSUL_TEMPLATE_VERSION=0.19.4 \
@@ -26,7 +26,7 @@ RUN \
   && echo -n "$RTTFIX_SHA256  rttfix" | sha256sum -c - \
   && chmod +x rttfix
 
-FROM debian:8
+FROM debian:8.11
 
 ENV \
   DBMAIL_MAIN_VERSION=3.2 \
@@ -38,9 +38,10 @@ ENV \
   VAULT_ADDR= \
   VAULT_TOKEN= \
   \
-  DBMAIL_SERVICE= \
-  DBMAIL_ROOT_ADDR= \
+  DBMAIL_DB_ADDR= \
   DBMAIL_REWRITE_DOMAIN= \
+  DBMAIL_ROOT_ADDR= \
+  DBMAIL_SERVICE= \
   \
   USER_UID=1000 \
   USER_GID=1000 \
