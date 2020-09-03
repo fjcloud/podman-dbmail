@@ -1,0 +1,49 @@
+smtpd_banner = EHLO MOTHERFUCKER
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+readme_directory = no
+
+# TLS parameters
+
+smtpd_tls_cert_file=/cert/fullchain.pem
+smtpd_tls_key_file=/cert/privkey.pem
+smtpd_use_tls=yes
+smtpd_tls_auth_only = yes
+
+#Enabling SMTP for authenticated users, and handing off authentication to Dovecot
+smtpd_tls_security_level = may
+smtpd_recipient_restrictions =
+        permit_sasl_authenticated,
+        permit_mynetworks,
+        reject_unauth_destination
+
+smtp_tls_security_level = may
+smtp_tls_key_file=/cert/privkey.pem
+smtp_tls_cert_file=/cert/fullchain.pem
+
+smtp_tls_note_starttls_offer = yes
+smtp_tls_enforce_peername = no
+
+smtpd_sasl_local_domain = webradio.space
+smtpd_sasl_auth_enable = yes
+broken_sasl_auth_clients = yes
+smtpd_sasl_type = cyrus
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_path = smtpd
+smtpd_sasl_exceptions_networks = $mynetworks
+
+myhostname = mx.webradio.space
+mydestination = webradio.space
+relayhost =
+relay_domains= webradio.space
+mynetworks = 127.0.0.0/8
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+
+#Handing off local delivery to Dovecot's LMTP, and telling it where to store mail
+mailbox_transport = dbmail-lmtp:dbmail-app-lmtp:24
+local_recipient_maps = pgsql:/conf/recipient_map.cf
