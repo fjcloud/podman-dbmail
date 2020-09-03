@@ -184,10 +184,10 @@ pid_directory         = /var/run/dbmail
 tls_cafile            =
 
 # A file containing a PEM format certificate
-tls_cert              =
+tls_cert              =  /cert/fullchain.pem
 
 # A file containing a PEM format RSA or DSA key
-tls_key               =
+tls_key               = /cert/privkey.pem
 
 # A cipher list string in the format given in ciphers(1)
 tls_ciphers           =
@@ -248,7 +248,7 @@ admin                 = admin:secret
 # Port to bind to.
 #
 port                  = 143
-#tls_port              = 993
+tls_port              = 993
 
 #
 # IMAP prefers a longer timeout than other services.
