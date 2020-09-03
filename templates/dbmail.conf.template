@@ -181,7 +181,7 @@ pid_directory         = /var/run/dbmail
 # SSL/TLS certificates
 #
 # A file containing a list of CAs in PEM format
-tls_cafile            =
+tls_cafile            = /cert/fullchain.pem
 
 # A file containing a PEM format certificate
 tls_cert              =  /cert/fullchain.pem
