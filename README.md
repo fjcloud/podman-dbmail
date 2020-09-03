@@ -1,3 +1,1 @@
-# docker-dbmail
-
-For internal usage.
+# podman-dbmail

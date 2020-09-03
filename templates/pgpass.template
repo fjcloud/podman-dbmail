@@ -1,1 +1,1 @@
-{{ env "DBMAIL_DB_ADDR" }}:*:{{ with secret "secret/mail/postgresql/user" }}{{ .Data.value }}{{ end }}:{{ with secret "secret/mail/postgresql/password" }}{{ .Data.value }}{{ end }}
+{{ env "DBMAIL_DB_ADDR" }}:*:{{ env "DBMAIL_DB_USER" }}:{{ env "DBMAIL_DB_PASSWORD" }}

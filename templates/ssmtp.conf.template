@@ -7,24 +7,7 @@ root={{ env "DBMAIL_ROOT_ADDR" }}
 
 # The place where the mail goes. The actual machine name is required no
 # MX records are consulted. Commonly mailhosts are named mail.domain.com
-mailhub=
-{{- if service "mta" }}
-  {{- range $s := service "mta~_agent" | toJSON | plugin "rttfix" | parseJSON }}
-      {{- if not ( scratch.Key "addr1" ) }}
-        {{- scratch.Set "addr1" "1" }}
-        {{- $s.Address }}:{{ $s.Port }}
-      {{- end }}
-  {{- end }}
-{{- else }}
-  {{- range $dc := datacenters true }}
-    {{- range $s := $dc | printf "mta@%s" | service | toJSON | plugin "rttfix" | parseJSON }}
-      {{- if not ( scratch.Key "addr2" ) }}
-        {{- scratch.Set "addr2" "1" }}
-        {{- $s.Address }}:{{ $s.Port }}
-      {{- end }}
-    {{- end }}
-  {{- end }}
-{{- end }}
+mailhub={{ env "DBMAIL_MAILHUB" }}
 
 # Where will the mail seem to come from?
 rewriteDomain={{ env "DBMAIL_REWRITE_DOMAIN" }}
