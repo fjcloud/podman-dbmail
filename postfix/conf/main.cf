@@ -1,6 +1,6 @@
 smtpd_banner = EHLO MOTHERFUCKER
 biff = no
-
+maillog_file = /dev/stdout
 # appending .domain is the MUA's job.
 append_dot_mydomain = no
 
@@ -27,7 +27,6 @@ smtp_tls_cert_file=/cert/fullchain.pem
 smtp_tls_note_starttls_offer = yes
 smtp_tls_enforce_peername = no
 
-smtpd_sasl_local_domain = webradio.space
 smtpd_sasl_auth_enable = yes
 broken_sasl_auth_clients = yes
 smtpd_sasl_type = cyrus
@@ -36,14 +35,15 @@ smtpd_sasl_path = smtpd
 smtpd_sasl_exceptions_networks = $mynetworks
 
 myhostname = mx.webradio.space
-mydestination = webradio.space, msl.cloud
-relayhost =
-relay_domains= webradio.space, msl.cloud
+mydomain = webradio.space
+myorigin = $mydomain
+mydestination = localhost 
+relay_domains = $mydestination
+relayhost = 
 mynetworks = 127.0.0.0/8
 mailbox_size_limit = 0
 recipient_delimiter = +
 inet_interfaces = all
 
-#Handing off local delivery to Dovecot's LMTP, and telling it where to store mail
-mailbox_transport = dbmail-lmtp:dbmail-app-lmtp:24
-local_recipient_maps = pgsql:/conf/recipient_map.cf
+virtual_mailbox_domains = pgsql:/conf/virtual_mailbox_domains.cf
+virtual_transport = dbmail-lmtp:dbmail-app-lmtp:24

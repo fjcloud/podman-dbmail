@@ -1,0 +1,5 @@
+user = dbmail
+password = dbmail
+hosts = dbmail-psql:5432
+dbname = mail
+query = SELECT DISTINCT 1  FROM dbmail_aliases WHERE SUBSTRING(alias FROM POSITION('@' in alias)+1) = '%s';

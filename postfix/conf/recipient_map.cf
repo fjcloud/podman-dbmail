@@ -1,5 +1,5 @@
 user = dbmail
 password = dbmail
-hosts = 10.88.0.10:5432
+hosts = dbmail-psql:5432
 dbname = mail
 query = SELECT DISTINCT 1 FROM dbmail_aliases WHERE alias='%s';
