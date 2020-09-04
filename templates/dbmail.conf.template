@@ -279,7 +279,8 @@ imap_before_smtp      = no
 # If TLS is enabled, login before starttls is normally
 # not allowed. Use login_disabled=no to change this
 #
-# login_disabled        = yes
+
+login_disabled        = no
 
 #
 # Provide a CAPABILITY to override the default
