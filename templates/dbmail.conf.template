@@ -181,13 +181,13 @@ pid_directory         = /var/run/dbmail
 # SSL/TLS certificates
 #
 # A file containing a list of CAs in PEM format
-tls_cafile            = /cert/fullchain.pem
+tls_cafile            = /etc/letsencrypt/live/mx.webradio.space/fullchain.pem
 
 # A file containing a PEM format certificate
-tls_cert              =  /cert/fullchain.pem
+tls_cert              =  /etc/letsencrypt/live/mx.webradio.space/fullchain.pem
 
 # A file containing a PEM format RSA or DSA key
-tls_key               = /cert/privkey.pem
+tls_key               = /etc/letsencrypt/live/mx.webradio.space/privkey.pem
 
 # A cipher list string in the format given in ciphers(1)
 tls_ciphers           =

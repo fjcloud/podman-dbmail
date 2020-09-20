@@ -8,8 +8,8 @@ readme_directory = no
 
 # TLS parameters
 
-smtpd_tls_cert_file=/cert/fullchain.pem
-smtpd_tls_key_file=/cert/privkey.pem
+smtpd_tls_cert_file=/etc/letsencrypt/live/mx.webradio.space/fullchain.pem
+smtpd_tls_key_file=/etc/letsencrypt/live/mx.webradio.space/privkey.pem
 smtpd_use_tls=yes
 smtpd_tls_auth_only = yes
 
@@ -21,8 +21,8 @@ smtpd_recipient_restrictions =
         reject_unauth_destination
 
 smtp_tls_security_level = may
-smtp_tls_key_file=/cert/privkey.pem
-smtp_tls_cert_file=/cert/fullchain.pem
+smtp_tls_key_file=/etc/letsencrypt/live/mx.webradio.space/privkey.pem
+smtp_tls_cert_file=/etc/letsencrypt/live/mx.webradio.space/fullchain.pem
 
 smtp_tls_note_starttls_offer = yes
 smtp_tls_enforce_peername = no
